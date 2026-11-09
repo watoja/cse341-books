@@ -44,6 +44,7 @@ Error responses should contain:
 - `success`: Boolean indicating failure.
 - `message`: A clear error description.
 
+#skip security
 ## 6. Security Requirements
 - Store database credentials in environment variables.
 - Never expose database credentials or internal error details.
