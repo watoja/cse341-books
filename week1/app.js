@@ -1,34 +1,33 @@
+// Import Express framework
+import express from 'express';
 
-// Import Express framework to create the web application
-import express from "express";
+// Import the application router
+import router from './src/router.js';
 
-
-
-// Create an instance of the Express application
+// Create an Express application
 const app = express();
 
 // Middleware to parse incoming JSON request bodies
-// This allows the application to read JSON data sent by clients
 app.use(express.json());
+
+// Temporary route test (remove after testing)
+app.get('/route-test', (req, res) => {
+  return res.status(200).send('Express route is working');
+});
+
+// Register the application routes
+app.use(router);
 
 /* ---------------------------------------------------------
    ROOT ROUTE
 --------------------------------------------------------- */
 
-// Define the GET / route (homepage)
-app.get("/", (req, res) => {
-
-    // Return a welcome message with HTTP status code 200 (OK)
-    res.status(200).json({
-        message: "Welcome to the Week 01 Express API!"
-    });
-
+// Welcome route
+app.get('/', (req, res) => {
+  return res.status(200).json({
+    message: 'Welcome to the Week 01 Express API!'
+  });
 });
 
-
-/* ---------------------------------------------------------
-   EXPORT EXPRESS APPLICATION
---------------------------------------------------------- */
-
-// Export the app so server.js can import and start it
+// Export the Express application
 export default app;
