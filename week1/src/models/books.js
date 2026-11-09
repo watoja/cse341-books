@@ -5,12 +5,16 @@ import { getDb } from '../db/connect.js';
    GET ALL BOOKS
 --------------------------------------------------------- */
 
-// Retrieve all book documents from the books collection
 const getAllBooks = async () => {
-  return await getDb()
-    .collection('books')
-    .find({})
+  const db = getDb();
+  const collection = db.collection('books');
+
+  // Retrieve all books while excluding MongoDB's _id field
+  const books = await collection
+    .find({}, { projection: { _id: 0 } })
     .toArray();
+
+  return books;
 };
 
 // Export the function for use in the controller
