@@ -1,25 +1,41 @@
 
- // Import Express to create a router
 import express from 'express';
 
-// Import both book controllers
 import {
   getBooksHandler,
   getBookByIdHandler
 } from './controllers/books.js';
 
-// Create an Express router
+import {
+  getAuthorsHandler,
+  getAuthorByIdHandler,
+  searchAuthorsHandler,
+  createAuthorHandler,
+  updateAuthorHandler,
+  deleteAuthorHandler
+} from './controllers/authors.js';
+
 const router = express.Router();
 
 /* ---------------------------------------------------------
    BOOK ROUTES
 --------------------------------------------------------- */
 
-// Route for retrieving all books
 router.get('/books', getBooksHandler);
-
-// Route for retrieving one book by ID
 router.get('/books/:id', getBookByIdHandler);
 
-// Export the router for use in app.js
+/* ---------------------------------------------------------
+   AUTHOR ROUTES
+--------------------------------------------------------- */
+
+router.get('/authors', getAuthorsHandler);
+
+// Search must be registered before /authors/:id.
+router.get('/authors/search', searchAuthorsHandler);
+
+router.get('/authors/:id', getAuthorByIdHandler);
+router.post('/authors', createAuthorHandler);
+router.put('/authors/:id', updateAuthorHandler);
+router.delete('/authors/:id', deleteAuthorHandler);
+
 export default router;
