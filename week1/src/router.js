@@ -3,7 +3,10 @@ import express from 'express';
 
 import {
   getBooksHandler,
-  getBookByIdHandler
+  getBookByIdHandler,
+  createBookHandler,
+  updateBookHandler,
+  deleteBookHandler
 } from './controllers/books.js';
 
 import {
@@ -17,22 +20,16 @@ import {
 
 const router = express.Router();
 
-/* ---------------------------------------------------------
-   BOOK ROUTES
---------------------------------------------------------- */
-
+// Books routes
 router.get('/books', getBooksHandler);
 router.get('/books/:id', getBookByIdHandler);
+router.post('/books', createBookHandler);
+router.put('/books/:id', updateBookHandler);
+router.delete('/books/:id', deleteBookHandler);
 
-/* ---------------------------------------------------------
-   AUTHOR ROUTES
---------------------------------------------------------- */
-
+// Authors routes
 router.get('/authors', getAuthorsHandler);
-
-// Search must be registered before /authors/:id.
 router.get('/authors/search', searchAuthorsHandler);
-
 router.get('/authors/:id', getAuthorByIdHandler);
 router.post('/authors', createAuthorHandler);
 router.put('/authors/:id', updateAuthorHandler);

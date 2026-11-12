@@ -1,33 +1,25 @@
-// Import Express framework
+
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 
-// Import the application router
 import router from './src/router.js';
+import openapiSpec from './src/openapi.js';
 
-// Create an Express application
 const app = express();
 
-// Middleware to parse incoming JSON request bodies
 app.use(express.json());
 
-// Temporary route test (remove after testing)
-app.get('/route-test', (req, res) => {
-  return res.status(200).send('Express route is working');
-});
+// Swagger API documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
-// Register the application routes
+// API routes
 app.use(router);
-
-/* ---------------------------------------------------------
-   ROOT ROUTE
---------------------------------------------------------- */
 
 // Welcome route
 app.get('/', (req, res) => {
   return res.status(200).json({
-    message: 'Welcome to the Week 01 Express API!'
+    message: 'Welcome to the CSE341 Books API!'
   });
 });
 
-// Export the Express application
 export default app;
