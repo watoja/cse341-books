@@ -5,14 +5,14 @@
   "engines": {
     "node": "20.x"
   },
-  "scripts": {
-    "start": "node --env-file=.env server.js",
-    "dev": "nodemon --env-file=.env server.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "swagger": "node -e \"console.log('Swagger documentation is available at http://localhost:3000/api-docs')\""
-  },
+ "scripts": {
+  "start": "node --env-file=.env server.js",
+  "dev": "nodemon --env-file=.env server.js",
+  "lint": "eslint .",
+  "lint:fix": "eslint . --fix",
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "swagger": "node swagger.js"
+},
   "dependencies": {
     "express": "^5.3.0",
     "mongodb": "^7.8.0",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "eslint": "^10.14.0",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "swagger-jsdoc": "^6.3.0"
   }
 }
