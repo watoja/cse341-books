@@ -3,14 +3,14 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 
 import router from './src/router.js';
-import openapiSpec from './src/openapi.js';
+import swaggerSpec from './swagger.json' with { type: 'json' };
 
 const app = express();
 
 app.use(express.json());
 
 // Swagger API documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // API routes
 app.use(router);
