@@ -197,7 +197,7 @@ const deleteAuthorHandler = async (req, res) => {
 
     if (result.status === 'referenced') {
       return res.status(409).json({
-        error: 'Cannot delete an author who is referenced by existing books'
+        message: 'Cannot delete an author who is referenced by existing books'
       });
     }
 

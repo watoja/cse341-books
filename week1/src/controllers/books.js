@@ -1,68 +1,175 @@
 
-// Import the model functions used to retrieve books
 import {
   getAllBooks,
-  getBookById
+  getBookById,
+  createBook,
+  updateBook,
+  deleteBook
 } from '../models/books.js';
 
-/* ---------------------------------------------------------
-   GET ALL BOOKS HANDLER
---------------------------------------------------------- */
+const isValidBook = (book) => {
+  return (
+    book &&
+    typeof book.id === 'string' &&
+    book.id.trim().length > 0 &&
+    typeof book.authorId === 'string' &&
+    book.authorId.trim().length > 0 &&
+    typeof book.title === 'string' &&
+    book.title.trim().length > 0 &&
+    typeof book.publicationDate === 'string' &&
+    /^\d{4}-\d{2}-\d{2}$/.test(book.publicationDate) &&
+    !Number.isNaN(Date.parse(`${book.publicationDate}T00:00:00Z`)) &&
+    new Date(`${book.publicationDate}T00:00:00Z`)
+      .toISOString()
+      .startsWith(book.publicationDate)
+  );
+};
 
-// Handle requests to retrieve all books
 const getBooksHandler = async (req, res) => {
   try {
-    // Retrieve all books from the database
     const books = await getAllBooks();
-
-    // Return the books as a JSON array with HTTP 200
     return res.status(200).json(books);
   } catch (error) {
-    // Log the actual error for server-side debugging
     console.error('Error retrieving books:', error.message);
-
-    // Return a safe error message to the client
     return res.status(500).json({
       message: 'Internal server error'
     });
   }
 };
 
-/* ---------------------------------------------------------
-   GET BOOK BY ID HANDLER
---------------------------------------------------------- */
-
-// Handle requests to retrieve one book by its ID
 const getBookByIdHandler = async (req, res) => {
-  // Get the requested book ID from the URL
-  const requestedId = req.params.id;
-
   try {
-    // Retrieve the book matching the requested ID
-    const book = await getBookById(requestedId);
+    const book = await getBookById(req.params.id);
 
-    // Return 404 if the requested book does not exist
     if (!book) {
       return res.status(404).json({
         message: 'Book not found'
       });
     }
 
-    // Return the matching book with HTTP 200
     return res.status(200).json(book);
   } catch (error) {
-    // Log the actual error for server-side debugging
     console.error('Error retrieving book:', error.message);
-
-    // Return a safe error message to the client
     return res.status(500).json({
       message: 'Internal server error'
     });
   }
 };
 
-// Export both handlers
+const createBookHandler = async (req, res) => {
+  const book = req.body;
+
+  if (!isValidBook(book)) {
+    return res.status(400).json({
+      message: 'Provide a valid id, authorId, title, and publicationDate'
+    });
+  }
+
+  try {
+    const result = await createBook({
+      id: book.id.trim(),
+      authorId: book.authorId.trim(),
+      title: book.title.trim(),
+      publicationDate: book.publicationDate
+    });
+
+    if (result.status === 'author-not-found') {
+      return res.status(400).json({
+        message: 'The specified author does not exist'
+      });
+    }
+
+    if (result.status === 'duplicate') {
+      return res.status(400).json({
+        message: 'A book with this ID already exists'
+      });
+    }
+
+
+    return res.status(201).json(result.book);
+  } catch (error) {
+    console.error('Error creating book:', error.message);
+    return res.status(500).json({
+      message: 'Internal server error'
+    });
+  }
+};
+
+const updateBookHandler = async (req, res) => {
+  const book = req.body;
+
+  if (
+    Object.hasOwn(book || {}, 'id') ||
+    Object.hasOwn(book || {}, '_id') ||
+    !book ||
+    typeof book.authorId !== 'string' ||
+    book.authorId.trim().length === 0 ||
+    typeof book.title !== 'string' ||
+    book.title.trim().length === 0 ||
+    typeof book.publicationDate !== 'string' ||
+    !isValidBook({
+      id: req.params.id,
+      authorId: book.authorId,
+      title: book.title,
+      publicationDate: book.publicationDate
+    })
+  ) {
+    return res.status(400).json({
+      message: 'Provide a valid authorId, title, and publicationDate. Book identifiers cannot be changed.'
+    });
+  }
+
+  try {
+    const result = await updateBook(req.params.id, {
+      authorId: book.authorId.trim(),
+      title: book.title.trim(),
+      publicationDate: book.publicationDate
+    });
+
+    if (result.status === 'not-found') {
+      return res.status(404).json({
+        message: 'Book not found'
+      });
+    }
+
+    if (result.status === 'author-not-found') {
+      return res.status(400).json({
+        message: 'The specified author does not exist'
+      });
+    }
+
+    return res.status(200).json(result.book);
+  } catch (error) {
+    console.error('Error updating book:', error.message);
+    return res.status(500).json({
+      message: 'Internal server error'
+    });
+  }
+};
+
+const deleteBookHandler = async (req, res) => {
+  try {
+    const deleted = await deleteBook(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({
+        message: 'Book not found'
+      });
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting book:', error.message);
+    return res.status(500).json({
+      message: 'Internal server error'
+    });
+  }
+};
+
 export {
   getBooksHandler,
-  getBookByIdHandler
+  getBookByIdHandler,
+  createBookHandler,
+  updateBookHandler,
+  deleteBookHandler
 };

@@ -1,44 +1,106 @@
 
-// Import the function that provides access to the MongoDB database
 import { getDb } from '../db/connect.js';
 
-/* ---------------------------------------------------------
-   GET ALL BOOKS
---------------------------------------------------------- */
-
-// Retrieve all book documents from the books collection
-const getAllBooks = async () => {
-  const db = getDb();
-  const collection = db.collection('books');
-
-  // Retrieve all books while excluding MongoDB's _id field
-  const books = await collection
-    .find({}, { projection: { _id: 0 } })
-    .toArray();
-
-  return books;
+const getBooksCollection = () => {
+  return getDb().collection('books');
 };
 
-/* ---------------------------------------------------------
-   GET BOOK BY ID
---------------------------------------------------------- */
+const getAllBooks = async () => {
+  const collection = getBooksCollection();
 
-// Retrieve one book using its custom ID
+  return collection
+    .find({}, { projection: { _id: 0 } })
+    .sort({ id: 1 })
+    .toArray();
+};
+
 const getBookById = async (bookId) => {
-  const db = getDb();
-  const collection = db.collection('books');
+  const collection = getBooksCollection();
 
-  // Find one book whose ID matches the supplied bookId
-  const book = await collection.findOne(
+  return collection.findOne(
     { id: bookId },
     { projection: { _id: 0 } }
   );
-
-  return book;
 };
 
-// Export both model functions
+const authorExists = async (authorId) => {
+  const authors = getDb().collection('authors');
+
+  const author = await authors.findOne({ id: authorId });
+
+  return Boolean(author);
+};
+
+const createBook = async (book) => {
+  const collection = getBooksCollection();
+
+  if (!(await authorExists(book.authorId))) {
+    return { status: 'author-not-found' };
+  }
+
+  try {
+    await collection.insertOne({
+      id: book.id,
+      authorId: book.authorId,
+      title: book.title,
+      publicationDate: book.publicationDate
+    });
+
+    return {
+      status: 'created',
+      book: await getBookById(book.id)
+    };
+  } catch (error) {
+    if (error.code === 11000) {
+      return { status: 'duplicate' };
+    }
+
+    throw error;
+  }
+};
+
+const updateBook = async (bookId, book) => {
+  const collection = getBooksCollection();
+
+  const existingBook = await collection.findOne({ id: bookId });
+
+  if (!existingBook) {
+    return { status: 'not-found' };
+  }
+
+  if (!(await authorExists(book.authorId))) {
+    return { status: 'author-not-found' };
+  }
+
+  await collection.updateOne(
+    { id: bookId },
+    {
+      $set: {
+        authorId: book.authorId,
+        title: book.title,
+        publicationDate: book.publicationDate
+      }
+    }
+  );
+
+  return {
+    status: 'updated',
+    book: await getBookById(bookId)
+  };
+};
+
+const deleteBook = async (bookId) => {
+  const collection = getBooksCollection();
+
+  const result = await collection.deleteOne({ id: bookId });
+
+  return result.deletedCount > 0;
+};
+
 export {
   getAllBooks,
-  getBookById
+  getBookById,
+  createBook,
+  updateBook,
+  deleteBook
 };
