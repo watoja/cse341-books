@@ -29,15 +29,23 @@ const router = express.Router();
  * /books:
  *   get:
  *     summary: Get all books
- *     tags: [Books]
+ *     tags:
+ *       - Books
  *     responses:
  *       200:
  *         description: List of books retrieved successfully
  *       500:
  *         description: Internal server error
+ */
+router.get('/books', getBooksHandler);
+
+/**
+ * @openapi
+ * /books:
  *   post:
  *     summary: Create a new book
- *     tags: [Books]
+ *     tags:
+ *       - Books
  *     requestBody:
  *       required: true
  *       content:
@@ -70,7 +78,6 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get('/books', getBooksHandler);
 router.post('/books', createBookHandler);
 
 /**
@@ -78,7 +85,8 @@ router.post('/books', createBookHandler);
  * /books/{id}:
  *   get:
  *     summary: Get a book by ID
- *     tags: [Books]
+ *     tags:
+ *       - Books
  *     parameters:
  *       - in: path
  *         name: id
@@ -90,9 +98,18 @@ router.post('/books', createBookHandler);
  *         description: Book retrieved successfully
  *       404:
  *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/books/:id', getBookByIdHandler);
+
+/**
+ * @openapi
+ * /books/{id}:
  *   put:
  *     summary: Update a book
- *     tags: [Books]
+ *     tags:
+ *       - Books
  *     parameters:
  *       - in: path
  *         name: id
@@ -122,9 +139,18 @@ router.post('/books', createBookHandler);
  *         description: Invalid book data or author
  *       404:
  *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/books/:id', updateBookHandler);
+
+/**
+ * @openapi
+ * /books/{id}:
  *   delete:
  *     summary: Delete a book
- *     tags: [Books]
+ *     tags:
+ *       - Books
  *     parameters:
  *       - in: path
  *         name: id
@@ -136,9 +162,9 @@ router.post('/books', createBookHandler);
  *         description: Book deleted successfully
  *       404:
  *         description: Book not found
+ *       500:
+ *         description: Internal server error
  */
-router.get('/books/:id', getBookByIdHandler);
-router.put('/books/:id', updateBookHandler);
 router.delete('/books/:id', deleteBookHandler);
 
 // ==========================================
@@ -150,15 +176,23 @@ router.delete('/books/:id', deleteBookHandler);
  * /authors:
  *   get:
  *     summary: Get all authors
- *     tags: [Authors]
+ *     tags:
+ *       - Authors
  *     responses:
  *       200:
- *         description: Authors retrieved successfully
+ *         description: A list of authors
  *       500:
- *         description: Internal server error
+ *         description: Unable to retrieve authors
+ */
+router.get('/authors', getAuthorsHandler);
+
+/**
+ * @openapi
+ * /authors:
  *   post:
  *     summary: Create a new author
- *     tags: [Authors]
+ *     tags:
+ *       - Authors
  *     requestBody:
  *       required: true
  *       content:
@@ -187,7 +221,6 @@ router.delete('/books/:id', deleteBookHandler);
  *       500:
  *         description: Internal server error
  */
-router.get('/authors', getAuthorsHandler);
 router.post('/authors', createAuthorHandler);
 
 /**
@@ -195,7 +228,8 @@ router.post('/authors', createAuthorHandler);
  * /authors/search:
  *   get:
  *     summary: Search authors
- *     tags: [Authors]
+ *     tags:
+ *       - Authors
  *     parameters:
  *       - in: query
  *         name: q
@@ -208,6 +242,8 @@ router.post('/authors', createAuthorHandler);
  *         description: Matching authors retrieved successfully
  *       400:
  *         description: Search query is required
+ *       500:
+ *         description: Internal server error
  */
 router.get('/authors/search', searchAuthorsHandler);
 
@@ -216,7 +252,8 @@ router.get('/authors/search', searchAuthorsHandler);
  * /authors/{id}:
  *   get:
  *     summary: Get an author by ID
- *     tags: [Authors]
+ *     tags:
+ *       - Authors
  *     parameters:
  *       - in: path
  *         name: id
@@ -228,9 +265,18 @@ router.get('/authors/search', searchAuthorsHandler);
  *         description: Author retrieved successfully
  *       404:
  *         description: Author not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/authors/:id', getAuthorByIdHandler);
+
+/**
+ * @openapi
+ * /authors/{id}:
  *   put:
  *     summary: Update an author
- *     tags: [Authors]
+ *     tags:
+ *       - Authors
  *     parameters:
  *       - in: path
  *         name: id
@@ -257,9 +303,18 @@ router.get('/authors/search', searchAuthorsHandler);
  *         description: Invalid author data
  *       404:
  *         description: Author not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/authors/:id', updateAuthorHandler);
+
+/**
+ * @openapi
+ * /authors/{id}:
  *   delete:
  *     summary: Delete an author
- *     tags: [Authors]
+ *     tags:
+ *       - Authors
  *     parameters:
  *       - in: path
  *         name: id
@@ -273,9 +328,9 @@ router.get('/authors/search', searchAuthorsHandler);
  *         description: Author not found
  *       409:
  *         description: Author is referenced by existing books
+ *       500:
+ *         description: Internal server error
  */
-router.get('/authors/:id', getAuthorByIdHandler);
-router.put('/authors/:id', updateAuthorHandler);
 router.delete('/authors/:id', deleteAuthorHandler);
 
 export default router;
