@@ -105,6 +105,9 @@
           },
           "404": {
             "description": "Book not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       },
@@ -156,6 +159,9 @@
           },
           "404": {
             "description": "Book not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       },
@@ -180,6 +186,9 @@
           },
           "404": {
             "description": "Book not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
@@ -192,10 +201,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Authors retrieved successfully"
+            "description": "A list of authors"
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Unable to retrieve authors"
           }
         }
       },
@@ -269,6 +278,9 @@
           },
           "400": {
             "description": "Search query is required"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
@@ -295,6 +307,9 @@
           },
           "404": {
             "description": "Author not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       },
@@ -342,6 +357,9 @@
           },
           "404": {
             "description": "Author not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       },
@@ -369,6 +387,9 @@
           },
           "409": {
             "description": "Author is referenced by existing books"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
